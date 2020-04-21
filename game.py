@@ -95,8 +95,48 @@ class Initiation(Scene):
         return True
 
 
+class Rescue(Scene):
+    """Second Scene. Player goes to rescue the prince from Roh."""
+
+    content1 = 'You reached Roh. With the help of the tacking fob, you managed to find the safekeep where the prince is kept. But you notice that it is guarded heavily by Rohians, and you need the house password to get inside the building. So, you decide to eavesdrop on the soldiers going inside. '
+    content2 = 'The trick worked. You managed to get almost all of the password, but it is now in a scrambled order. You need to unscramble it and get a reasonable word as password'
+
+    def enter(self):
+        simtype(Rescue.content1)
+        time.sleep(2)
+        simtype(Rescue.content2)
+        time.sleep(2)
+        word = Gamedata.getrandomword().upper()
+        wordscram = Rescue.scramble(word)
+        limit = Gamedata.getlimit()
+        for i in range(limit):
+            print('\n')
+            print(wordscram)
+            print(f'{limit-i} attempts remaining')
+            temp = input("Guess the scrambled password: ").upper()
+            time.sleep(1)
+            if temp == word:
+                print(f'You Guessed it right. Password is {word}')
+                time.sleep(2)
+                return True
+            else:
+                print('Pling! Wrong Word.')
+        print(f'\n\nPassword was : {word} \n You Lose')
+        time.sleep(2)
+        return False
+
+    @staticmethod
+    def scramble(word):
+        word = list(word.upper())
+        temp = ''
+        for i in range(len(word)):
+            index = random.randint(0, len(word)-1)
+            temp += word.pop(index)
+        return temp
+
+
 class Fight(Scene):
-    """Third Scene. Rearranged for the Rescue scene to uses its class variables."""
+    """Third Scene"""
 
     content1 = 'You manage to get inside the building. You searched for a while but managed to find prince in good health. Now you must get out of that building safely. But you can\'t do it alone. You need help from the Timerian spies outside the building. You find the signal to call them encoded in runes. You need to decode it and alert them for rescue. '
 
@@ -137,49 +177,9 @@ class Fight(Scene):
         return False
 
 
-class Rescue(Scene):
-    """Second Scene. Player goes to rescue the prince from Roh."""
-
-    content1 = 'You reached Roh. With the help of the tacking fob, you managed to find the safekeep where the prince is kept. But you notice that it is guarded heavily by Rohians, and you need the house password to get inside the building. So, you decide to eavesdrop on the soldiers going inside. '
-    content2 = 'The trick worked. You managed to get almost all of the password, but it is now in a scrambled order. You need to unscramble it and get a reasonable word as password'
-
-    def enter(self):
-        simtype(Rescue.content1)
-        time.sleep(2)
-        simtype(Rescue.content2)
-        time.sleep(2)
-        word = Gamedata.getrandomword().upper()
-        wordscram = Rescue.scramble(word)
-        limit = Gamedata.getlimit()
-        for i in range(limit):
-            print('\n')
-            print(wordscram)
-            print(f'{5-i} attempts remaining')
-            temp = input("Guess the scrambled password: ").upper()
-            time.sleep(1)
-            if temp == word:
-                print(f'You Guessed it right. Password is {word}')
-                time.sleep(2)
-                return True
-            else:
-                print('Pling! Wrong Word.')
-        print(f'\n\nPassword was : {word} \n You Lose')
-        time.sleep(2)
-        return False
-
-    @staticmethod
-    def scramble(word):
-        word = list(word.upper())
-        temp = ''
-        for i in range(len(word)):
-            index = random.randint(0, len(word)-1)
-            temp += word.pop(index)
-        return temp
-
-
 class Escape(Scene):
 
-    content1 = 'Good job. You managed to inform Temerian spies outside the safekeep. It was just a matter of seconds after skilled Temeriain spies rushed in and massacred every enemy soldier. You and the prince got out of the building. You must now quikly escape from there. You need a pod to get out of there. One of the spies inform you of a a nearby spybase. You and the prince rush to there.'
+    content1 = 'Good job. You managed to inform Timerian spies outside the safekeep. It was just a matter of seconds after skilled Timeriain spies rushed in and massacred every enemy soldier. You and the prince got out of the building. You must now quikly escape from there. You need a pod to get out of there. One of the spies inform you of a a nearby spybase. You and the prince rush to there.'
     content2 = 'You managed to reach at the base quickly. But, alas!, no pod there is now in a working condition. All the working pods are already in use. You must now quickly do something.'
     content3 = 'The One who programmed this game (@joel.sleeba), wasn\'t expecting this situation. So, it seems like you need to edit the code of the game and programme a rescue method. But this wicked One have encrypted this game with a password. You can\'t change any part of the code unless you can find that passcode. Here\'s a little help. This game seems to follow the structure of a recent T.V series. He might\'ve used the name of that T.V series as the pasSword to encrypt the game. Try your best.'
 
@@ -303,9 +303,9 @@ class Gamedata():
 
     level = 1
 
-    @staticmethod
-    def setlevel(value):
-        Gamedata.level = value
+    @classmethod
+    def setlevel(cls, value):
+        cls.level = value
 
     @staticmethod
     def getrandomword():
@@ -363,3 +363,5 @@ class Map():
 a = Map()
 game = Engine(a)
 game.play()
+
+11
